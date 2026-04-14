@@ -53,4 +53,3 @@ full_pipeline = ColumnTransformer([
 # 6. Transform the data
 housing_prepared = full_pipeline.fit_transform(housing)
 print(housing_prepared)
-# housing_prepared is now a NumPy array ready for training
