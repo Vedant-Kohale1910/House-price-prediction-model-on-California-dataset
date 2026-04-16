@@ -1,1 +1,5 @@
 housing_data.csv
+input.csv
+model.pkl
+output.csv
+pipeline.pkl
