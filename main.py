@@ -5,6 +5,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import root_mean_squared_error
+from sklearn.model_selection import cross_val_score
 
 # 1. Load the data
 housing = pd.read_csv('housing_data.csv')
@@ -52,4 +57,31 @@ full_pipeline = ColumnTransformer([
 
 # 6. Transform the data
 housing_prepared = full_pipeline.fit_transform(housing)
-print(housing_prepared)
+
+# 7. Train the model
+## Linear Regression model
+lin_reg = LinearRegression()
+lin_reg.fit(housing_prepared, housing_labels)
+lin_reg_pred = lin_reg.predict(housing_prepared)
+lin_rmse = root_mean_squared_error(housing_labels, lin_reg_pred)
+print(f"The root mean squared error for linear regression is {lin_rmse}")
+lin_rmses = -cross_val_score(lin_reg, housing_prepared, housing_labels, scoring='neg_root_mean_squared_error', cv=10)
+print(pd.Series(lin_rmses).describe())
+
+## Decision Tree model
+dec_reg = DecisionTreeRegressor()
+dec_reg.fit(housing_prepared, housing_labels)
+dec_reg_pred = dec_reg.predict(housing_prepared)
+dec_rmse = root_mean_squared_error(housing_labels, dec_reg_pred)
+print(f"The root mean squared error for decision tree regression is {dec_rmse}")
+dec_rmses = -cross_val_score(dec_reg, housing_prepared, housing_labels, scoring='neg_root_mean_squared_error', cv=10)
+print(pd.Series(dec_rmses).describe())
+
+## Random Forest model
+random_forest_reg = RandomForestRegressor()
+random_forest_reg.fit(housing_prepared, housing_labels)
+random_forest_reg_pred = random_forest_reg.predict(housing_prepared)
+random_forest_rmse = root_mean_squared_error(housing_labels, random_forest_reg_pred)
+print(f"The root mean squared error for Random forest regression is {random_forest_rmse}")
+random_forest_rmses = -cross_val_score(random_forest_reg, housing_prepared, housing_labels, scoring='neg_root_mean_squared_error', cv=10)
+print(pd.Series(random_forest_rmses).describe())
